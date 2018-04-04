@@ -1,3 +1,8 @@
+import json
+import requests
+import sys
+
+
 def dijkstra(G, a, z):
     """
     Algoritmo de Dijkstra
@@ -20,15 +25,16 @@ def dijkstra(G, a, z):
     #  L: diccionario vertice -> etiqueta
     #  S: conjunto de vertices con etiquetas temporales
     #  A: vertice -> vertice previo (en camino longitud minima)
-    L = dict([(u, Inf) for u in G]) #py3: L = {u:Inf for u in G}
+    L = dict([(u, Inf) for u in G])  # py3: L = {u:Inf for u in G}
     L[a] = 0
-    S = set([u for u in G]) #py3: S = {u for u in G}
-    A = { }
+    S = set([u for u in G])  # py3: S = {u for u in G}
+    A = {}
 
     # Funcion auxiliar, dado un vertice retorna su etiqueta
     # se utiliza para encontrar el vertice the etiqueta minima
     def W(v):
         return L[v]
+
     # Iteracion principal del algoritmo de Dijkstra
     while z in S:
         u = min(S, key=W)
@@ -52,32 +58,57 @@ def dijkstra(G, a, z):
     return L[z], P
 
 
-G1 = { # Rosen, Figura 4 (pp. 559)
-    'a' : [('b', 4), ('c',2)],
-    'b' : [('a', 4), ('c',1), ('d',5)],
-    'c' : [('a', 2), ('b',1), ('d',8), ('e',10)],
-    'd' : [('b', 5), ('c',8), ('e',2), ('z', 6)],
-    'e' : [('c',10), ('d',2), ('z',3)],
-    'z' : [('d', 6), ('e',3)],
-    }
+G1 = {  # Rosen, Figura 4 (pp. 559)
+    'a': [('b', 4), ('c', 2)],
+    'b': [('a', 4), ('c', 1), ('d', 5)],
+    'c': [('a', 2), ('b', 1), ('d', 8), ('e', 10)],
+    'd': [('b', 5), ('c', 8), ('e', 2), ('z', 6)],
+    'e': [('c', 10), ('d', 2), ('z', 3)],
+    'z': [('d', 6), ('e', 3)],
+}
 
-G2 = { # Rosen, Ej. 8.6-2 (pp. 562)
-    'a' : [('b', 2), ('c',3)],
-    'b' : [('a', 2), ('d',5), ('e',2)],
-    'c' : [('a', 3), ('e',5)],
-    'd' : [('b', 5), ('e',1), ('z',2)],
-    'e' : [('b', 2), ('c',5), ('d',1), ('z',4)],
-    'z' : [('d', 2), ('e',4)],
-    }
-
+G2 = {  # Rosen, Ej. 8.6-2 (pp. 562)
+    'a': [('b', 2), ('c', 3)],
+    'b': [('a', 2), ('d', 5), ('e', 2)],
+    'c': [('a', 3), ('e', 5)],
+    'd': [('b', 5), ('e', 1), ('z', 2)],
+    'e': [('b', 2), ('c', 5), ('d', 1), ('z', 4)],
+    'z': [('d', 2), ('e', 4)],
+}
 
 if __name__ == '__main__':
     from pprint import pprint
-    #
-    w, p =  dijkstra(G1, 'a', 'z')
-    pprint (p)
-    pprint (w)
-    #
-    w, p =  dijkstra(G2, 'a', 'z')
-    pprint (p)
-    pprint (w)
+
+    # Llave para usar el API
+    api_key = 'AIzaSyCyrjA1EaA9aknTz2mDabiR_bC4jNprzog'
+
+    # URL del Google Distance Matrix
+    base_url = 'https://maps.googleapis.com/maps/api/distancematrix/json?'
+
+    # Google Distance Matrix domain-specific terms: origins and destinations
+    origins = ['Tecate, Baja California']
+    destinations = ['Metepec, Estado de mexico', 'Sombrerete, Zacatecas']
+    payload = {
+        'origins': '|'.join(origins),
+        'destinations': '|'.join(destinations),
+        'mode': 'driving',
+        'api_key': api_key
+    }
+
+    if r.status_code != 200:
+        print('HTTP status code {} received, program terminated.'.format(r.status_code))
+    else:
+        try:
+            # Assemble the URL and query the web service
+            r = requests.get(base_url, params=payload)
+
+            w, p = dijkstra(G1, 'a', 'z')
+            pprint(p)
+            pprint(w)
+
+            w, p = dijkstra(G2, 'a', 'z')
+            pprint(p)
+            pprint(w)
+
+        except ValueError:
+            print("Error while parsing JSON respone, program KILLED")
