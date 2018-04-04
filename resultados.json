@@ -1,0 +1,33 @@
+{
+   "destination_addresses" : [ "Metepec, State of Mexico, Mexico", "Sombrerete, Zacatecas, Mexico" ],
+   "origin_addresses" : [ "Tecate, Baja California, Mexico" ],
+   "rows" : [
+      {
+         "elements" : [
+            {
+               "distance" : {
+                  "text" : "2,660 km",
+                  "value" : 2660491
+               },
+               "duration" : {
+                  "text" : "1 day 5 hours",
+                  "value" : 105771
+               },
+               "status" : "OK"
+            },
+            {
+               "distance" : {
+                  "text" : "2,082 km",
+                  "value" : 2082415
+               },
+               "duration" : {
+                  "text" : "23 hours 22 mins",
+                  "value" : 84131
+               },
+               "status" : "OK"
+            }
+         ]
+      }
+   ],
+   "status" : "OK"
+}
