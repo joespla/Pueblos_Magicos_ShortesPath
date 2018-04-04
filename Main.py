@@ -95,12 +95,20 @@ if __name__ == '__main__':
         'api_key': api_key
     }
 
+    # Assemble the URL and query the web service
+    r = requests.get(base_url, params=payload)
+
+    # Checa el codigo regresado por el servidor HTTP. Sólo funciona con código 200
     if r.status_code != 200:
         print('HTTP status code {} received, program terminated.'.format(r.status_code))
     else:
         try:
-            # Assemble the URL and query the web service
-            r = requests.get(base_url, params=payload)
+            x = json.loads(r.text)
+            print(x)
+
+            for isrc, src in enumerate(x['origin_addresses']):
+                for idst, dst in enumerate(x['destination_addresses']):
+                    print("Hello")
 
             w, p = dijkstra(G1, 'a', 'z')
             pprint(p)
@@ -112,3 +120,9 @@ if __name__ == '__main__':
 
         except ValueError:
             print("Error while parsing JSON respone, program KILLED")
+
+
+'''
+    La información del API se encuentra en el siguiente link:
+        https://developers.google.com/maps/documentation/distance-matrix/usage-limits
+'''
