@@ -58,26 +58,24 @@ def dijkstra(G, a, z):
     return L[z], P
 
 
-G1 = {  # Rosen, Figura 4 (pp. 559)
-    'a': [('b', 4), ('c', 2)],
-    'b': [('a', 4), ('c', 1), ('d', 5)],
-    'c': [('a', 2), ('b', 1), ('d', 8), ('e', 10)],
-    'd': [('b', 5), ('c', 8), ('e', 2), ('z', 6)],
-    'e': [('c', 10), ('d', 2), ('z', 3)],
-    'z': [('d', 6), ('e', 3)],
-}
+def pueblos(nombres):
+    filename = 'PueblosMagicos.txt'
 
-G2 = {  # Rosen, Ej. 8.6-2 (pp. 562)
-    'a': [('b', 2), ('c', 3)],
-    'b': [('a', 2), ('d', 5), ('e', 2)],
-    'c': [('a', 3), ('e', 5)],
-    'd': [('b', 5), ('e', 1), ('z', 2)],
-    'e': [('b', 2), ('c', 5), ('d', 1), ('z', 4)],
-    'z': [('d', 2), ('e', 4)],
-}
+    # Using the newer with construct to close the file automatically.
+    with open(filename) as f:
+        data = f.readlines()
+
+    for place in data:
+        nombres.append(place.rstrip())
+
+    print(nombres)
+
 
 if __name__ == '__main__':
     from pprint import pprint
+
+    #Lista de pueblos mágicos
+    magic = []
 
     # Llave para usar el API
     api_key = 'AIzaSyCyrjA1EaA9aknTz2mDabiR_bC4jNprzog'
@@ -110,6 +108,24 @@ if __name__ == '__main__':
                 for idst, dst in enumerate(x['destination_addresses']):
                     print("Hello")
 
+            G1 = {  # Rosen, Figura 4 (pp. 559)
+                'a': [('b', 4), ('c', 2)],
+                'b': [('a', 4), ('c', 1), ('d', 5)],
+                'c': [('a', 2), ('b', 1), ('d', 8), ('e', 10)],
+                'd': [('b', 5), ('c', 8), ('e', 2), ('z', 6)],
+                'e': [('c', 10), ('d', 2), ('z', 3)],
+                'z': [('d', 6), ('e', 3)],
+            }
+
+            G2 = {  # Rosen, Ej. 8.6-2 (pp. 562)
+                'a': [('b', 2), ('c', 3)],
+                'b': [('a', 2), ('d', 5), ('e', 2)],
+                'c': [('a', 3), ('e', 5)],
+                'd': [('b', 5), ('e', 1), ('z', 2)],
+                'e': [('b', 2), ('c', 5), ('d', 1), ('z', 4)],
+                'z': [('d', 2), ('e', 4)],
+            }
+
             w, p = dijkstra(G1, 'a', 'z')
             pprint(p)
             pprint(w)
@@ -121,6 +137,7 @@ if __name__ == '__main__':
         except ValueError:
             print("Error while parsing JSON respone, program KILLED")
 
+    pueblos(magic)
 
 '''
     La información del API se encuentra en el siguiente link:
