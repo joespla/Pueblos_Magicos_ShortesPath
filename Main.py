@@ -34,6 +34,8 @@ def api():
     lugar = []
     tiempo = []
 
+    tf = len(tiempo)
+
     for i in range(1):
         origins.append(magic[i])
     for j in range(1, 101):
@@ -87,10 +89,19 @@ def api():
             z = cell['distance']['value']
             tiempo.append(z)
 
-    print(lugar)
-    print(len(lugar))
-    print(len(tiempo))
-    print(tiempo)
+    chico = tiempo[0]
+    orden = []
+    while not tiempo:
+        for iitem, item in enumerate(tiempo, start=0):
+            if item < chico:
+                chico = item
+                orden.append(iitem)
+            if iitem == len(tiempo)-1:
+                tiempo.remove(chico)
+
+    for i in range(len(lugar)):
+        print(lugar[orden[i]] + "\n")
+
 
 if __name__ == '__main__':
 
