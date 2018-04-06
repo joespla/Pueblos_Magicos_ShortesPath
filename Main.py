@@ -68,15 +68,13 @@ def pueblos(nombres):
     for place in data:
         nombres.append(place.rstrip())
 
-    print(nombres)
-
 
 if __name__ == '__main__':
     from pprint import pprint
 
-    #Lista de pueblos mágicos
+    # Crea arreglo con los pueblos del archivo txt
     magic = []
-
+    pueblos(magic)
     # Llave para usar el API
     api_key = 'AIzaSyCyrjA1EaA9aknTz2mDabiR_bC4jNprzog'
 
@@ -84,8 +82,12 @@ if __name__ == '__main__':
     base_url = 'https://maps.googleapis.com/maps/api/distancematrix/json?'
 
     # Google Distance Matrix domain-specific terms: origins and destinations
-    origins = ['Tecate, Baja California']
-    destinations = ['Metepec, Estado de mexico', 'Sombrerete, Zacatecas']
+    origins = []
+    destinations = []
+    for i in range(1):
+        for j in range(100):
+            destinations.append(magic[j])
+        origins.append(magic[i])
     payload = {
         'origins': '|'.join(origins),
         'destinations': '|'.join(destinations),
@@ -107,6 +109,9 @@ if __name__ == '__main__':
             for isrc, src in enumerate(x['origin_addresses']):
                 for idst, dst in enumerate(x['destination_addresses']):
                     print("Hello")
+
+            with open('resultados.json', 'w') as f:
+                f.write(r.text)
 
             G1 = {  # Rosen, Figura 4 (pp. 559)
                 'a': [('b', 4), ('c', 2)],
@@ -137,7 +142,6 @@ if __name__ == '__main__':
         except ValueError:
             print("Error while parsing JSON respone, program KILLED")
 
-    pueblos(magic)
 
 '''
     La información del API se encuentra en el siguiente link:
