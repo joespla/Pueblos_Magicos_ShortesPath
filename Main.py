@@ -96,7 +96,7 @@ def api():
             if item < chico:
                 chico = item
                 orden.append(iitem)
-            if iitem == len(tiempo)-1:
+            if iitem == len(tiempo) - 1:
                 tiempo.remove(chico)
 
     for i in range(len(lugar)):
@@ -104,8 +104,6 @@ def api():
 
 
 if __name__ == '__main__':
-
-
     api()
 
 '''
