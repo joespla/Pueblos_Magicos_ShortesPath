@@ -27,21 +27,11 @@ def api():
 
     # Google Distance Matrix domain-specific terms: origins and destinations
     origins = []
-
     destinations = []
-    destinations2 = []
 
-    lugar = []
-    tiempo = []
-
-    tf = len(tiempo)
-
-    for i in range(1):
+    for i in range(len(magic)):
         origins.append(magic[i])
-    for j in range(1, 101):
-        destinations.append(magic[j])
-    for k in range(100, 112):
-        destinations2.append(magic[k])
+        destinations.append(magic[i])
 
     payload = {
         'origins': '|'.join(origins),
@@ -49,17 +39,9 @@ def api():
         'mode': 'driving',
         'api_key': api_key
     }
-    payload2 = {
-        'origins': '|'.join(origins),
-        'destinations': '|'.join(destinations2),
-        'mode': 'driving',
-        'api_key': api_key
-    }
 
     # Assemble the URL and query the web service
     r = requests.get(base_url, params=payload)
-    time.sleep(1)
-    s = requests.get(base_url, params=payload2)
 
     # Checa el codigo regresado por el servidor HTTP. Sólo funciona con código 200
     if r.status_code != 200:
@@ -67,20 +49,17 @@ def api():
     else:
         try:
             a = r.text
-            b = s.text
             x = json.loads(a)
-            y = json.loads(b)
 
-            print(str(x) + str(y))
-            print("\n")
+            print(x)
 
             with open('resultados.json', 'w') as f:
                 f.write(a)
-                f.write(b)
 
         except ValueError:
             print("Error while parsing JSON respone, program KILLED")
 
+    '''
     for isrc, src in enumerate(x['origin_addresses']):
         for idst, dst in enumerate(x['destination_addresses']):
             lugar.append(dst)
@@ -88,19 +67,7 @@ def api():
             cell = row['elements'][idst]
             z = cell['distance']['value']
             tiempo.append(z)
-
-    chico = tiempo[0]
-    orden = []
-    while not tiempo:
-        for iitem, item in enumerate(tiempo, start=0):
-            if item < chico:
-                chico = item
-                orden.append(iitem)
-            if iitem == len(tiempo) - 1:
-                tiempo.remove(chico)
-
-    for i in range(len(lugar)):
-        print(lugar[orden[i]] + "\n")
+    '''
 
 
 def dijkstra(G, a, z):
@@ -160,7 +127,7 @@ def dijkstra(G, a, z):
 if __name__ == '__main__':
     from pprint import pprint
 
-    #api()
+    api()
     G1 = {  # Rosen, Figura 4 (pp. 559)
         'a': [('b', 4), ('c', 2)],
         'b': [('a', 4), ('c', 1), ('d', 5)],
