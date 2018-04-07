@@ -5,7 +5,7 @@ import time
 
 
 def pueblos(nombres):
-    filename = 'PueblosMagicos.txt'
+    filename = 'PueblosMagicosRes.txt'
 
     # Using the newer with construct to close the file automatically.
     with open(filename) as f:
