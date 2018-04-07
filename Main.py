@@ -51,7 +51,7 @@ def api():
             a = r.text
             x = json.loads(a)
 
-            print(x)
+            print(str(x) + '\n')
 
             with open('resultados.json', 'w') as f:
                 f.write(a)
@@ -68,6 +68,76 @@ def api():
             z = cell['distance']['value']
             tiempo.append(z)
     '''
+
+    places = {
+        x['origin_addresses'][0]: [(x['origin_addresses'][1], x['rows'][0]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][0]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][0]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][0]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][0]['elements'][5]['distance']['value']),
+                                   (x['origin_addresses'][6], x['rows'][0]['elements'][6]['distance']['value']),
+                                   (x['origin_addresses'][7], x['rows'][0]['elements'][7]['distance']['value'])],
+
+        x['origin_addresses'][1]: [(x['origin_addresses'][0], x['rows'][1]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][1]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][1]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][1]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][1]['elements'][5]['distance']['value']),
+                                   (x['origin_addresses'][6], x['rows'][1]['elements'][6]['distance']['value']),
+                                   (x['origin_addresses'][7], x['rows'][1]['elements'][7]['distance']['value'])],
+
+        x['origin_addresses'][2]: [(x['origin_addresses'][0], x['rows'][2]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][1], x['rows'][2]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][2]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][2]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][2]['elements'][5]['distance']['value']),
+                                   (x['origin_addresses'][6], x['rows'][2]['elements'][6]['distance']['value']),
+                                   (x['origin_addresses'][7], x['rows'][2]['elements'][7]['distance']['value'])],
+
+        x['origin_addresses'][3]: [(x['origin_addresses'][0], x['rows'][3]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][1], x['rows'][3]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][3]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][3]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][3]['elements'][5]['distance']['value']),
+                                   (x['origin_addresses'][6], x['rows'][3]['elements'][6]['distance']['value']),
+                                   (x['origin_addresses'][7], x['rows'][3]['elements'][7]['distance']['value'])],
+
+        x['origin_addresses'][4]: [(x['origin_addresses'][0], x['rows'][4]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][1], x['rows'][4]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][4]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][4]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][4]['elements'][5]['distance']['value']),
+                                   (x['origin_addresses'][6], x['rows'][4]['elements'][6]['distance']['value']),
+                                   (x['origin_addresses'][7], x['rows'][4]['elements'][7]['distance']['value'])],
+
+        x['origin_addresses'][5]: [(x['origin_addresses'][0], x['rows'][5]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][1], x['rows'][5]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][5]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][5]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][5]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][6], x['rows'][5]['elements'][6]['distance']['value']),
+                                   (x['origin_addresses'][7], x['rows'][5]['elements'][7]['distance']['value'])],
+
+        x['origin_addresses'][6]: [(x['origin_addresses'][0], x['rows'][6]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][1], x['rows'][6]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][6]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][6]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][6]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][6]['elements'][5]['distance']['value']),
+                                   (x['origin_addresses'][7], x['rows'][6]['elements'][7]['distance']['value'])],
+
+        x['origin_addresses'][7]: [(x['origin_addresses'][0], x['rows'][7]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][1], x['rows'][7]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][7]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][7]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][7]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][7]['elements'][5]['distance']['value']),
+                                   (x['origin_addresses'][6], x['rows'][7]['elements'][6]['distance']['value'])],
+    }
+
+    w, p = dijkstra(places, x['origin_addresses'][0], x['origin_addresses'][7])
+    pprint(p)
+    pprint(w)
 
 
 def dijkstra(G, a, z):
@@ -128,6 +198,13 @@ if __name__ == '__main__':
     from pprint import pprint
 
     api()
+
+'''
+    - Sólo ocupar 10 nodos/pueblos
+    -
+'''
+
+'''
     G1 = {  # Rosen, Figura 4 (pp. 559)
         'a': [('b', 4), ('c', 2)],
         'b': [('a', 4), ('c', 1), ('d', 5)],
@@ -140,11 +217,6 @@ if __name__ == '__main__':
     w, p = dijkstra(G1, 'a', 'z')
     pprint(p)
     pprint(w)
-
-
-'''
-    - Sólo ocupar 10 nodos/pueblos
-    -
 '''
 
 
