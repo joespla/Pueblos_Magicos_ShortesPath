@@ -1,11 +1,9 @@
 import json
 import requests
-import sys
-import time
 
 
 def pueblos(nombres):
-    filename = 'PueblosMagicos.txt'
+    filename = 'PueblosMagicosRes.txt'
 
     # Using the newer with construct to close the file automatically.
     with open(filename) as f:
@@ -27,21 +25,11 @@ def api():
 
     # Google Distance Matrix domain-specific terms: origins and destinations
     origins = []
-
     destinations = []
-    destinations2 = []
 
-    lugar = []
-    tiempo = []
-
-    tf = len(tiempo)
-
-    for i in range(1):
+    for i in range(len(magic)):
         origins.append(magic[i])
-    for j in range(1, 101):
-        destinations.append(magic[j])
-    for k in range(100, 112):
-        destinations2.append(magic[k])
+        destinations.append(magic[i])
 
     payload = {
         'origins': '|'.join(origins),
@@ -49,66 +37,96 @@ def api():
         'mode': 'driving',
         'api_key': api_key
     }
-    payload2 = {
-        'origins': '|'.join(origins),
-        'destinations': '|'.join(destinations2),
-        'mode': 'driving',
-        'api_key': api_key
-    }
 
-    # Assemble the URL and query the web service
     r = requests.get(base_url, params=payload)
-    time.sleep(1)
-    s = requests.get(base_url, params=payload2)
 
-    # Checa el codigo regresado por el servidor HTTP. Sólo funciona con código 200
     if r.status_code != 200:
         print('HTTP status code {} received, program terminated.'.format(r.status_code))
     else:
         try:
             a = r.text
-            b = s.text
             x = json.loads(a)
-            y = json.loads(b)
 
-            print(str(x) + str(y))
-            print("\n")
+            print(str(x) + '\n')
 
             with open('resultados.json', 'w') as f:
                 f.write(a)
-                f.write(b)
 
         except ValueError:
             print("Error while parsing JSON respone, program KILLED")
 
-    for isrc, src in enumerate(x['origin_addresses']):
-        for idst, dst in enumerate(x['destination_addresses']):
-            lugar.append(dst)
-            row = x['rows'][isrc]
-            cell = row['elements'][idst]
-            z = cell['distance']['value']
-            tiempo.append(z)
 
-    chico = tiempo[0]
-    orden = []
-    while not tiempo:
-        for iitem, item in enumerate(tiempo, start=0):
-            if item < chico:
-                chico = item
-                orden.append(iitem)
-            if iitem == len(tiempo)-1:
-                tiempo.remove(chico)
+    places = {
+        x['origin_addresses'][0]: [(x['origin_addresses'][1], x['rows'][0]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][0]['elements'][2]['distance']['value'])],
 
-    for i in range(len(lugar)):
-        print(lugar[orden[i]] + "\n")
+        x['origin_addresses'][1]: [(x['origin_addresses'][0], x['rows'][1]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][1]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][1]['elements'][3]['distance']['value'])],
+
+        x['origin_addresses'][2]: [(x['origin_addresses'][0], x['rows'][2]['elements'][0]['distance']['value']),
+                                   (x['origin_addresses'][1], x['rows'][2]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][2]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][2]['elements'][4]['distance']['value'])],
+
+        x['origin_addresses'][3]: [(x['origin_addresses'][1], x['rows'][3]['elements'][1]['distance']['value']),
+                                   (x['origin_addresses'][2], x['rows'][3]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][3]['elements'][4]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][3]['elements'][5]['distance']['value'])],
+
+        x['origin_addresses'][4]: [(x['origin_addresses'][2], x['rows'][4]['elements'][2]['distance']['value']),
+                                   (x['origin_addresses'][3], x['rows'][4]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][5], x['rows'][4]['elements'][5]['distance']['value'])],
+
+        x['origin_addresses'][5]: [(x['origin_addresses'][3], x['rows'][5]['elements'][3]['distance']['value']),
+                                   (x['origin_addresses'][4], x['rows'][5]['elements'][4]['distance']['value'])],
+    }
+
+    w, p = dijkstra(places, x['origin_addresses'][0], x['origin_addresses'][5])
+    pprint("El camino más corto es " + str(p))
+    pprint("Con una distancia" + str(w))
+
+
+def dijkstra(G, a, z):
+
+    assert a in G
+    assert z in G
+
+    Inf = 0
+    for u in G:
+        for v, w in G[u]:
+            Inf += w
+
+    L = dict([(u, Inf) for u in G])  # py3: L = {u:Inf for u in G}
+    L[a] = 0
+    S = set([u for u in G])  # py3: S = {u for u in G}
+    A = {}
+
+    def W(v):
+        return L[v]
+
+    while z in S:
+        u = min(S, key=W)
+        S.discard(u)
+        for v, w in G[u]:
+            if v in S:
+                if L[u] + w < L[v]:
+                    L[v] = L[u] + w
+                    A[v] = u
+
+    P = []
+    u = z
+    while u != a:
+        P.append(u)
+        u = A[u]
+    P.append(a)
+    P.reverse()
+
+    return L[z], P
 
 
 if __name__ == '__main__':
-
+    from pprint import pprint
 
     api()
 
-'''
-    La información del API se encuentra en el siguiente link:
-        https://developers.google.com/maps/documentation/distance-matrix/usage-limits
-'''
